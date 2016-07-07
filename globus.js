@@ -18,7 +18,6 @@ exports.getUserId = function(bearerToken, userEmail) {
 
     function callback(err, response, body) {
         if (err) {
-            console.error(err);
             reject(new Error(err));
         }
         resolve(JSON.parse(body).identities[0].id);
@@ -39,7 +38,7 @@ exports.getUserId = function(bearerToken, userEmail) {
  * @param  {string} path         an absolute path to the resoureces you'd like to share
  * @param  {string} userEmail    the email of the user you'd like to notify
  * @param  {string} emailMessage the message you'd like to attach to the e-mail
- * @return {promise}             containing true if successful and false if otherwise
+ * @return {promise}             containing the body of the response
  */
 exports.shareEndpointWithUser = function(bearerToken, endpointId, userId, path, userEmail, emailMessage) {
   return new Promise(function(resolve, reject) {
@@ -58,10 +57,9 @@ exports.shareEndpointWithUser = function(bearerToken, endpointId, userId, path, 
 
     function callback(err, response, body) {
         if (err) {
-            console.error(err);
-            resolve(false);
+            resolve(new Error(err));
         }
-        resolve(true);
+        resolve(body);
     }
 
     request.post(url, acl_json, callback).auth(null, null, true, bearerToken);
@@ -74,7 +72,7 @@ exports.shareEndpointWithUser = function(bearerToken, endpointId, userId, path, 
  *
  * @param  {string} bearerToken token authorized by globus.org
  * @param  {string} endpointId  the id of the endpoint you'd like to base your share off of
- * @return {promise}            containing a JSON object of the representation of the endpoint
+ * @return {promise}            containing the body of the response
  */
 exports.getEndPoint = function(bearerToken, endpointId) {
     return new Promise(function(resolve, reject) {
@@ -82,7 +80,6 @@ exports.getEndPoint = function(bearerToken, endpointId) {
 
         function callback(err, response, body) {
             if (err) {
-                console.error(err);
                 reject(new Error(err));
             }
             resolve(body);
@@ -103,7 +100,7 @@ exports.getEndPoint = function(bearerToken, endpointId) {
  * @param  {string} path         an absolute path to the resoureces you'd like to share
  * @param  {string} description  a short description of the endpoint
  * @param  {string} organization the organization that is opening this endpoint
- * @return {promise}             containing true if successful false if otherwise
+ * @return {promise}             containing the body of the response
  */
 exports.createEndPoint = function(bearerToken, displayName, hostId, path, description, organization) {
   return new Promise(function(resolve, reject) {
@@ -121,10 +118,9 @@ exports.createEndPoint = function(bearerToken, displayName, hostId, path, descri
 
     function callback(err, response, body) {
         if (err) {
-            console.error(err);
-            reject(false);
+            reject(new Error(err));
         }
-        resolve(true);
+        resolve(body);
     }
 
     request.post(url, shared_endpoint_json, callback).auth(null, null, true, bearerToken);
