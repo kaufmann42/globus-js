@@ -107,7 +107,7 @@ exports.getEndPoint = function(bearerToken, endpointId) {
  */
 exports.createEndPoint = function(bearerToken, displayName, hostId, path, description, organization) {
   return new Promise(function(resolve, reject) {
-    var url = transferBaseURL + '/endpoint',
+    var url = transferBaseURL + '/shared_endpoint',
         shared_endpoint_json = {
             json: {
                 'DATA_TYPE': 'shared_endpoint',
