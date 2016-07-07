@@ -73,7 +73,7 @@ exports.shareEndpointWithUser = function(bearerToken, endpointId, userId, path, 
  * @return {object}             a JSON object of the representation of the endpoint
  */
 exports.getEndPoint = function(bearerToken, endpointId) {
-    var url = transferBaseURL + '/' + endpointId;
+    var url = transferBaseURL + '/endpoint/' + endpointId;
 
     function callback(err, response, body) {
         if (err) {
