@@ -10,20 +10,22 @@ var request = require('request'),
  *
  * @param  {string} bearerToken token authorized by globus.org
  * @param  {string} userEmail   User's e-mail
- * @return {string}             User's UUID
+ * @return {promise}            contains a string of the User's UUID
  */
 exports.getUserId = function(bearerToken, userEmail) {
+  return new Promise(function(resolve, reject) {
     var url = authBaseURL + 'identities?usernames=' + userEmail.replace('@', '%40');
 
     function callback(err, response, body) {
         if (err) {
             console.error(err);
-            return;
+            reject(new Error(err));
         }
-        return JSON.parse(body).identities[0].id;
+        resolve(JSON.parse(body).identities[0].id);
     }
 
     request.get(url, callback).auth(null, null, true, bearerToken);
+  });
 };
 
 
@@ -37,9 +39,10 @@ exports.getUserId = function(bearerToken, userEmail) {
  * @param  {string} path         an absolute path to the resoureces you'd like to share
  * @param  {string} userEmail    the email of the user you'd like to notify
  * @param  {string} emailMessage the message you'd like to attach to the e-mail
- * @return {boolean}             true if successful and false if otherwise
+ * @return {promise}             containing true if successful and false if otherwise
  */
 exports.shareEndpointWithUser = function(bearerToken, endpointId, userId, path, userEmail, emailMessage) {
+  return new Promise(function(resolve, reject) {
     var url = transferBaseURL + '/endpoint/' + endpointId + '/access',
         acl_json = {
             json: {
@@ -56,12 +59,13 @@ exports.shareEndpointWithUser = function(bearerToken, endpointId, userId, path, 
     function callback(err, response, body) {
         if (err) {
             console.error(err);
-            return false;
+            resolve(false);
         }
-        return true;
+        resolve(true);
     }
 
     request.post(url, acl_json, callback).auth(null, null, true, bearerToken);
+  });
 };
 
 
@@ -70,20 +74,22 @@ exports.shareEndpointWithUser = function(bearerToken, endpointId, userId, path, 
  *
  * @param  {string} bearerToken token authorized by globus.org
  * @param  {string} endpointId  the id of the endpoint you'd like to base your share off of
- * @return {object}             a JSON object of the representation of the endpoint
+ * @return {promise}            containing a JSON object of the representation of the endpoint
  */
 exports.getEndPoint = function(bearerToken, endpointId) {
-    var url = transferBaseURL + '/endpoint/' + endpointId;
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + '/endpoint/' + endpointId;
 
-    function callback(err, response, body) {
-        if (err) {
-            console.error(err);
-            return;
+        function callback(err, response, body) {
+            if (err) {
+                console.error(err);
+                reject(new Error(err));
+            }
+            resolve(body);
         }
-        return body;
-    }
 
-    request.get(url, callback).auth(null, null, true, bearerToken);
+        request.get(url, callback).auth(null, null, true, bearerToken);
+    });
 };
 
 
@@ -97,9 +103,10 @@ exports.getEndPoint = function(bearerToken, endpointId) {
  * @param  {string} path         an absolute path to the resoureces you'd like to share
  * @param  {string} description  a short description of the endpoint
  * @param  {string} organization the organization that is opening this endpoint
- * @return {boolean}             returns true if successful
+ * @return {promise}             containing true if successful false if otherwise
  */
 exports.createEndPoint = function(bearerToken, displayName, hostId, path, description, organization) {
+  return new Promise(function(resolve, reject) {
     var url = transferBaseURL + '/endpoint',
         shared_endpoint_json = {
             json: {
@@ -115,10 +122,11 @@ exports.createEndPoint = function(bearerToken, displayName, hostId, path, descri
     function callback(err, response, body) {
         if (err) {
             console.error(err);
-            return false;
+            reject(false);
         }
-        return true;
+        resolve(true);
     }
 
     request.post(url, shared_endpoint_json, callback).auth(null, null, true, bearerToken);
+  });
 };
