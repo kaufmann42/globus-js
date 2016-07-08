@@ -1,15 +1,30 @@
 {
   "name": "globus-js",
   "version": "2.2.2",
-  "description": "",
+  "description": "A package for interacting with the globus.org REST API.",
   "main": "globus.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kaufmann42/globus-js"
+  },
+  "bugs": {
+    "url": "https://github.com/kaufmann42/globus-js/issues"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["globus", "data transfer", "biology", "gridFTP"],
+  "keywords": [
+    "globus",
+    "data transfer",
+    "biology",
+    "gridFTP"
+  ],
   "author": "jkaufmann",
   "license": "ISC",
   "dependencies": {
     "request": "^2.72.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0"
   }
 }
