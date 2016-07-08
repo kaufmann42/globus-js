@@ -66,15 +66,6 @@ Returns **[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 ## getActivationRequirements
 
-<https://docs.globus.org/api/transfer/endpoint_activation/#get_activation_requirements>
-
-**Parameters**
-
--   `bearerToken`  
--   `endpointId`  
-
-## getActivationRequirements
-
 getActivationRequirements - Gets the activation requirements of a particular endpoint.
 
 **Parameters**
