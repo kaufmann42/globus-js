@@ -33,43 +33,25 @@ exports.getActivationRequirements = function(bearerToken, endpointId) {
 
 // TODO: 7.2. Autoactivate endpoint function will go here
 
+
 /**
- * activateEndpoint - To active an endpoint, clients should get the activation
- *  requirements for the endpoint (either explicitly or from the autoactivate
- *  result), pick an activation method, and fill in values for the chosen
- *  activation method. The requirements for the other methods not being used
- *  must be removed before submitting the request.
+ * exports - description
  *
- * On success, it will return a result code of the form "Activated.TYPE", where
- * TYPE indicates the type of activation used.
- *
- * @param  {string} bearerToken token authorized by globus.org
- * @param  {string} endpointId  UUID of endpoint you want to activate
- * @param  {string} type        The type of activation this requirement is for.
- * @param  {string} name        The name for the information required.
- * @param  {string} value       Detailed description of the requirement.
- * @param  {boolean} required    Suggested name to display in a GUI.
- * @param  {boolean} private_feild     Boolean specifying if the data is sensetive, e.g. for password fields. Clients are encouraged to mask the user’s typing when prompting for values of private fields.
- * @param  {string} ui_name     true if the value is required for this type of activation.
- * @param  {string} description The value for the requirement. When GETing this will be either empty or have a default value filled in. When POSTing any values without defaults should be set, and the defaults can be overwritten when needed. Note that this must be a string, even for int-like fields.
- * @return {promise}          containing the body of the response
+ * @param  {type} bearerToken description
+ * @param  {type} endpointId  description
+ * @param  {type} username    description
+ * @param  {type} passphrase  description
+ * @return {type}             description
  */
-exports.activateEndpoint = function(bearerToken, endpointId, type, name, value, required, private_feild, ui_name, description) {
+exports.activateEndpoint = function(bearerToken, endpointId, hostname, username, passphrase) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + endpointId + '/activate';
         var reqBody = {
             json: {
                 "DATA_TYPE": "activation_requirements",
-                "DATA": [{
-                    "type": type,
-                    "name": name,
-                    "value": value,
-                    "required": required,
-                    "private": private_feild,
-                    "ui_name": ui_name,
-                    "description": description,
-                    "DATA_TYPE": "activation_requirement"
-                }]
+                "hostname": hostname,
+                "username": username,
+                "passphrase": passphrase
             }
         };
 

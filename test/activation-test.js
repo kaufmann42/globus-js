@@ -24,4 +24,10 @@ describe('Get Activation Requirements', function() {
   })
 });
 
-describe('Activate Endpoint');
+describe('Activate Endpoint', function() {
+  it('should activate a given endpoint', function() {
+    activation.activateEndpoint().then(function(obj) {
+
+    })
+  });
+});
