@@ -49,12 +49,12 @@ exports.getActivationRequirements = function(bearerToken, endpointId) {
  * @param  {type} name        The name for the information required.
  * @param  {type} value       Detailed description of the requirement.
  * @param  {type} required    Suggested name to display in a GUI.
- * @param  {type} private     Boolean specifying if the data is sensetive, e.g. for password fields. Clients are encouraged to mask the user’s typing when prompting for values of private fields.
+ * @param  {type} private_feild     Boolean specifying if the data is sensetive, e.g. for password fields. Clients are encouraged to mask the user’s typing when prompting for values of private fields.
  * @param  {type} ui_name     true if the value is required for this type of activation.
  * @param  {type} description The value for the requirement. When GETing this will be either empty or have a default value filled in. When POSTing any values without defaults should be set, and the defaults can be overwritten when needed. Note that this must be a string, even for int-like fields.
  * @return {promise}          containing the body of the response
  */
-exports.activateEndpoint = function(bearerToken, endpointId, type, name, value, required, private, ui_name, description) {
+exports.activateEndpoint = function(bearerToken, endpointId, type, name, value, required, private_feild, ui_name, description) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + endpointId + '/activate';
         var reqBody = {
@@ -65,10 +65,10 @@ exports.activateEndpoint = function(bearerToken, endpointId, type, name, value, 
                     "name": name,
                     "value": value,
                     "required": required,
-                    "private": private,
+                    "private": private_feild,
                     "ui_name": ui_name,
-                    "description": description
-                    "DATA_TYPE": "activation_requirement",
+                    "description": description,
+                    "DATA_TYPE": "activation_requirement"
                 }]
             }
         };
