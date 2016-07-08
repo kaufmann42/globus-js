@@ -5,15 +5,14 @@ var request = require('request'),
 
 /**
  * https://docs.globus.org/api/transfer/endpoint_activation/#get_activation_requirements
- * TODO: Test all of these methods.
  */
 
 
 /**
  * getActivationRequirements - Gets the activation requirements of a particular endpoint.
  *
- * @param  {type} bearerToken token authorized by globus.org
- * @param  {type} endpointId  UUID of endpoint you want to activate
+ * @param  {string} bearerToken token authorized by globus.org
+ * @param  {string} endpointId  UUID of endpoint you want to get the activation requirements for
  * @return {promise}          containing the body of the response
  */
 exports.getActivationRequirements = function(bearerToken, endpointId) {
@@ -33,26 +32,26 @@ exports.getActivationRequirements = function(bearerToken, endpointId) {
 
 // TODO: 7.2. Autoactivate endpoint function will go here
 
-
 /**
- * exports - description
+ * activateEndpoint - To active an endpoint, clients should get the activation
+ *  requirements for the endpoint (either explicitly or from the autoactivate
+ *  result), pick an activation method, and fill in values for the chosen
+ *  activation method. The requirements for the other methods not being used
+ *  must be removed before submitting the request.
  *
- * @param  {type} bearerToken description
- * @param  {type} endpointId  description
- * @param  {type} username    description
- * @param  {type} passphrase  description
- * @return {type}             description
+ * On success, it will return a result code of the form "Activated.TYPE", where
+ * TYPE indicates the type of activation used.
+ *
+ * @param  {string} bearerToken                      token authorized by globus.org
+ * @param  {string} endpointId                       UUID of endpoint you want to activate
+ * @param  {object} activation_requirements_document a json object gotten from getActivationRequirements(..) with the required values filled in (https://docs.globus.org/api/transfer/endpoint_activation/#activation_requirements_document)
+ * @return {promise}                                  containing the body of the response
  */
-exports.activateEndpoint = function(bearerToken, endpointId, hostname, username, passphrase) {
+exports.activateEndpoint = function(bearerToken, endpointId, activation_requirements_document) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + endpointId + '/activate';
         var reqBody = {
-            json: {
-                "DATA_TYPE": "activation_requirements",
-                "hostname": hostname,
-                "username": username,
-                "passphrase": passphrase
-            }
+            json: activation_requirements_document
         };
 
         function callback(err, response, body) {
@@ -70,8 +69,8 @@ exports.activateEndpoint = function(bearerToken, endpointId, hostname, username,
 /**
  * deactivateEndpoint - Deactivates a endpoint given its UUID.
  *
- * @param  {type} bearerToken token authorized by globus.org
- * @param  {type} endpointId  UUID of endpoint you want to deactivate
+ * @param  {string} bearerToken token authorized by globus.org
+ * @param  {string} endpointId  UUID of endpoint you want to deactivate
  * @return {promise}          containing the body of the response
  */
 exports.deactivateEndpoint = function(bearerToken, endpointId) {
@@ -82,7 +81,7 @@ exports.deactivateEndpoint = function(bearerToken, endpointId) {
             if (err) {
                 reject(new Error(err));
             }
-            resolve(JSON.parse(body).identities[0].id);
+            resolve(body);
         }
 
         request.post(url, callback).auth(null, null, true, bearerToken);
