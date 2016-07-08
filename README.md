@@ -1,10 +1,26 @@
 # globus-js
 
-A npm package for working with the globus API through HTTP REST calls
+A package for interacting with the globus.org REST API.
+
+[globus.org](globus.org)
 
 ## Install
 
 npm install --save-dev globus-js
+
+## TODO
+* Format modules into API logical section
+  * [Task Submission](https://docs.globus.org/api/transfer/task_submit/)
+  * [Task Monitoring](https://docs.globus.org/api/transfer/task/)
+  * [File Operations](https://docs.globus.org/api/transfer/file_operations/)
+  * [Endpoint Management](https://docs.globus.org/api/transfer/endpoint/)
+  * [Endpoint Search](https://docs.globus.org/api/transfer/endpoint_search/)
+  * [Endpoint Roles](https://docs.globus.org/api/transfer/endpoint_roles/)
+  * [Endpoint Bookmarks](https://docs.globus.org/api/transfer/endpoint_bookmarks/)
+  * [Endpoint ACL](https://docs.globus.org/api/transfer/acl/)
+* Write script prepublish to construct minified globus.js file
+* Reformat README to be more readable
+* Move documentation to github wiki
 
 # API
 
@@ -20,6 +36,8 @@ feild.
 -   `userEmail` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** User's e-mail
 
 Returns **[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** contains a string of the User's UUID
+
+___
 
 ## shareEndpointWithUser
 
@@ -37,6 +55,8 @@ found by looking at the details of the endpoint you want to piggy back off of.
 
 Returns **[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** containing the body of the response
 
+___
+
 ## getEndPoint
 
 getEndPoint - get's information about an endpoint given its endpointId.
@@ -47,6 +67,8 @@ getEndPoint - get's information about an endpoint given its endpointId.
 -   `endpointId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** the id of the endpoint you'd like to base your share off of
 
 Returns **[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** containing the body of the response
+
+___
 
 ## createEndPoint
 
@@ -64,6 +86,8 @@ to share paths with certain people.
 
 Returns **[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** containing the body of the response
 
+___
+
 ## getActivationRequirements
 
 getActivationRequirements - Gets the activation requirements of a particular endpoint.
@@ -74,6 +98,8 @@ getActivationRequirements - Gets the activation requirements of a particular end
 -   `endpointId` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** UUID of endpoint you want to get the activation requirements for
 
 Returns **[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** containing the body of the response
+
+___
 
 ## activateEndpoint
 
@@ -93,6 +119,8 @@ TYPE indicates the type of activation used.
 -   `activation_requirements_document` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** a json object gotten from getActivationRequirements(..) with the required values filled in (<https://docs.globus.org/api/transfer/endpoint_activation/#activation_requirements_document>)
 
 Returns **[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** containing the body of the response
+
+___
 
 ## deactivateEndpoint
 
