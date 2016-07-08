@@ -3,10 +3,8 @@ var request = require('request'),
     authBaseURL = 'https://auth.globus.org/v2/api/';
 
 
-/**
- * https://docs.globus.org/api/transfer/endpoint_activation/#get_activation_requirements
- */
 
+// https://docs.globus.org/api/transfer/endpoint_activation/#get_activation_requirements
 
 /**
  * getActivationRequirements - Gets the activation requirements of a particular endpoint.
