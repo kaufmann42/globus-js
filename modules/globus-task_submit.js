@@ -30,43 +30,43 @@ exports.getSubmissionId = function(bearerToken) {
 };
 
 
- /**
-  * submitTransferTask - Submits a transfer task.
-  *
-  * @param  {string} bearerToken              token authorized by globus.org
-  * @param  {string} submission_id            Id acquired from getSubmissionId
-  * @param  {string} label                    user specified string to help identify the Transfer or delete task.
-  * @param  {boolean} notify_on_succeeded     If true and the user has notification enabled, send a notification email when the transfer completes with status SUCCEEDED.
-  * @param  {boolean} notify_on_failed        If true and the user has notification enabled, send a notification email when the transfer completes with status FAILED.
-  * @param  {boolean} notify_on_inactive      If true and the user has notification enabled, send a notification email when the transfer enters status INACTIVE, e.g. from activation credentials expiring.
-  * @param  {string} source_endpoint          UUID of the endpoint to transfer data from.
-  * @param  {string} destination_endpoint     UUID of the endpoint to transfer data to.
-  * @param  {object} DATA                     List of [transfer_item](https://docs.globus.org/api/transfer/task_submit/#transfer_item_fields) documents containing source and destination paths.
-  * @param  {boolean} encrypt_data            If true, encrypt the data channel. If either the source or destination endpoint, or for shared endpoints the source or destination host endpoint, has force_encryption set, the data channel will be encrypted even if this is set to false.
-  * @param  {integer} sync_level              review this [link](https://docs.globus.org/api/transfer/task_submit/#transfer_specific_fields) for information on this field.
-  * @param  {boolean} verify_checksum          After transfer, verify that the source and destination file checksums match. If they don’t, re-transfer the entire file and keep trying until it succeeds.
-  * @param  {boolean} preserve_timestamp       Preserve file modification time.
-  * @param  {boolean} delete_destination_extra Delete extraneous files in the destination directory. Only applies for recursive directory transfers.
-  * @return {promise}                containing the body of the response object
-  */
+/**
+ * submitTransferTask - Submits a transfer task.
+ *
+ * @param  {string} bearerToken              token authorized by globus.org
+ * @param  {string} submission_id            Id acquired from getSubmissionId
+ * @param  {string} label                    user specified string to help identify the Transfer or delete task.
+ * @param  {boolean} notify_on_succeeded     If true and the user has notification enabled, send a notification email when the transfer completes with status SUCCEEDED.
+ * @param  {boolean} notify_on_failed        If true and the user has notification enabled, send a notification email when the transfer completes with status FAILED.
+ * @param  {boolean} notify_on_inactive      If true and the user has notification enabled, send a notification email when the transfer enters status INACTIVE, e.g. from activation credentials expiring.
+ * @param  {string} source_endpoint          UUID of the endpoint to transfer data from.
+ * @param  {string} destination_endpoint     UUID of the endpoint to transfer data to.
+ * @param  {object} DATA                     List of [transfer_item](https://docs.globus.org/api/transfer/task_submit/#transfer_item_fields) documents containing source and destination paths.
+ * @param  {boolean} encrypt_data            If true, encrypt the data channel. If either the source or destination endpoint, or for shared endpoints the source or destination host endpoint, has force_encryption set, the data channel will be encrypted even if this is set to false.
+ * @param  {integer} sync_level              review this [link](https://docs.globus.org/api/transfer/task_submit/#transfer_specific_fields) for information on this field.
+ * @param  {boolean} verify_checksum          After transfer, verify that the source and destination file checksums match. If they don’t, re-transfer the entire file and keep trying until it succeeds.
+ * @param  {boolean} preserve_timestamp       Preserve file modification time.
+ * @param  {boolean} delete_destination_extra Delete extraneous files in the destination directory. Only applies for recursive directory transfers.
+ * @return {promise}                containing the body of the response object
+ */
 exports.submitTransferTask = function(bearerToken, submission_id, label, notify_on_succeeded, notify_on_failed, notify_on_inactive, source_endpoint, destination_endpoint, DATA, encrypt_data, sync_level, verify_checksum, preserve_timestamp, delete_destination_extra) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + '/transfer';
         var reqBody = {
             json: {
-              submission_id: submission_id,
-              label: label,
-              notify_on_succeeded: notify_on_succeeded,
-              notify_on_failed: notify_on_failed,
-              notify_on_inactive: notify_on_inactive,
-              source_endpoint: source_endpoint,
-              destination_endpoint: destination_endpoint,
-              DATA: DATA,
-              encrypt_data: encrypt_data,
-              sync_level: sync_level,
-              verify_checksum: verify_checksum,
-              preserve_timestamp: preserve_timestamp,
-              delete_destination_extra: delete_destination_extra
+                submission_id: submission_id,
+                label: label,
+                notify_on_succeeded: notify_on_succeeded,
+                notify_on_failed: notify_on_failed,
+                notify_on_inactive: notify_on_inactive,
+                source_endpoint: source_endpoint,
+                destination_endpoint: destination_endpoint,
+                DATA: DATA,
+                encrypt_data: encrypt_data,
+                sync_level: sync_level,
+                verify_checksum: verify_checksum,
+                preserve_timestamp: preserve_timestamp,
+                delete_destination_extra: delete_destination_extra
             }
         };
 
