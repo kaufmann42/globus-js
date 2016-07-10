@@ -3,7 +3,7 @@ var assert = require('chai').assert,
     bearerToken = privateInfo.getBearerToken(),
     endpointId = privateInfo.getEndPointId(),
     activation_requirements_document = privateInfo.getActivationRequirementsDocument(),
-    activation = require('../modules/globus-activation');
+    activation = require('../globus');
 
 describe('Get Activation Requirements', function() {
   it('should return activation requirements', function() {

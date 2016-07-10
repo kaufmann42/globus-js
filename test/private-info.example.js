@@ -95,3 +95,46 @@ exports.getActivationRequirementsDocument = function() {
         "oauth_server": null
     };
 };
+
+exports.getTransferDocument = function() {
+    return {
+        DATA_TYPE: 'transfer',
+        submission_id: 'YOUR_SUBMISSION_ID_HERE',
+        label: 'testing',
+        notify_on_succeeded: true,
+        notify_on_failed: true,
+        notify_on_inactive: true,
+        source_endpoint: 'YOUR_SOURCE_ENDPOINT_HERE',
+        destination_endpoint: 'YOUR_DESTINATION_ENDPOINT_HERE',
+        encrypt_data: true,
+        sync_level: 0,
+        verify_checksum: true,
+        preserve_timestamp: false,
+        delete_destination_extra: false,
+        DATA: [{
+            DATA_TYPE: 'transfer_item',
+            source_path: 'YOUR_SOURCE_ABSOLUTE_PATH_HERE',
+            destination_path: 'YOUR_DESTINATION_ABSOLUTE_PATH_HERE',
+            recursive: true
+        }]
+    };
+};
+
+exports.getDeleteDocument = function() {
+    return {
+        DATA_TYPE: 'transfer',
+        submission_id: 'YOUR_SUBMISSION_ID_HERE',
+        label: 'testing',
+        notify_on_succeeded: true,
+        notify_on_failed: true,
+        notify_on_inactive: true,
+        endpoint: 'YOUR_ENDPOINT_ID_HERE',
+        recursive: false,
+        ignore_missing: true,
+        interpret_globs: true,
+        DATA: [{
+            DATA_TYPE: 'delete_item',
+            path: 'YOUR_ABSOLUTE_PATH_HERE'
+        }]
+    };
+};

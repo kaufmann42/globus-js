@@ -2,10 +2,7 @@ var request = require('request'),
     transferBaseURL = 'https://transfer.api.globusonline.org/v0.10/',
     authBaseURL = 'https://auth.globus.org/v2/api/';
 
-
-
 // https://docs.globus.org/api/transfer/task_submit/#operations_requirements
-
 
 /**
  * getSubmissionId - Get a submission id, required when submitting transfer and delete tasks.
@@ -54,6 +51,7 @@ exports.submitTransferTask = function(bearerToken, submission_id, label, notify_
         var url = transferBaseURL + '/transfer';
         var reqBody = {
             json: {
+                DATA_TYPE: 'transfer',
                 submission_id: submission_id,
                 label: label,
                 notify_on_succeeded: notify_on_succeeded,
