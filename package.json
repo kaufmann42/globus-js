@@ -1,6 +1,6 @@
 {
   "name": "globus-js",
-  "version": "2.3.2",
+  "version": "2.4.2",
   "description": "A package for interacting with the globus.org REST API.",
   "main": "globus.js",
   "repository": {
