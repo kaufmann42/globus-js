@@ -11,7 +11,7 @@ npm install --save-dev globus-js
 ## TODO
 
 -   Format modules into API logical section
-    -   [Task Submission](https://docs.globus.org/api/transfer/task_submit/)
+    -   ~~Task Submission~~
     -   [Task Monitoring](https://docs.globus.org/api/transfer/task/)
     -   [File Operations](https://docs.globus.org/api/transfer/file_operations/)
     -   [Endpoint Management](https://docs.globus.org/api/transfer/endpoint/)
