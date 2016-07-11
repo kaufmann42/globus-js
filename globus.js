@@ -27,46 +27,6 @@ exports.getUserId = function(bearerToken, userEmail) {
   });
 };
 
-
-/**
- * shareEndpointWithUser - opens an access point with a given user. Shared endpointId's can be
- * found by looking at the details of the endpoint you want to piggy back off of.
- *
- * @param  {string} bearerToken  token authorized by globus.org
- * @param  {string} endpointId   the id of the endpoint you'd like to base your share off of
- * @param  {string} userId       the UUID of the user you'd like to share this endpoint with
- * @param  {string} path         an absolute path to the resoureces you'd like to share
- * @param  {string} userEmail    the email of the user you'd like to notify
- * @param  {string} emailMessage the message you'd like to attach to the e-mail
- * @return {promise}             containing the body of the response
- */
-exports.shareEndpointWithUser = function(bearerToken, endpointId, userId, path, userEmail, emailMessage) {
-  return new Promise(function(resolve, reject) {
-    var url = transferBaseURL + 'endpoint/' + endpointId + '/access',
-        acl_json = {
-            json: {
-                'DATA_TYPE': 'access',
-                'principal_type': 'identity',
-                'principal': userId,
-                'path': path,
-                'permissions': 'r',
-                'notify_email': userEmail,
-                'notify_message': emailMessage
-            }
-        };
-
-    function callback(err, response, body) {
-        if (err) {
-            resolve(new Error(err));
-        }
-        resolve(body);
-    }
-
-    request.post(url, acl_json, callback).auth(null, null, true, bearerToken);
-  });
-};
-
-
 /**
  * getEndPoint - get's information about an endpoint given its endpointId.
  *

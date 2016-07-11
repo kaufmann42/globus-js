@@ -12,7 +12,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "prepublish": "echo \"Error: no test specified\""
+    "prepublish": "mocha"
   },
   "keywords": [
     "globus",
