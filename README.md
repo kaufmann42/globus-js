@@ -18,9 +18,10 @@ npm install --save-dev globus-js
     -   [Endpoint Search](https://docs.globus.org/api/transfer/endpoint_search/)
     -   [Endpoint Roles](https://docs.globus.org/api/transfer/endpoint_roles/)
     -   [Endpoint Bookmarks](https://docs.globus.org/api/transfer/endpoint_bookmarks/)
-    -   [Endpoint ACL](https://docs.globus.org/api/transfer/acl/)
+    -   ~~Endpoint ACL~~
 -   Write script prepublish to construct minified globus.js file
 -   Reformat README to be more readable
+    -   Add contributing documentation
 -   Move documentation to github wiki
 
 # API
