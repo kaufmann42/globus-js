@@ -27,6 +27,10 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "grunt": "^1.0.1",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-jsbeautifier": "^0.2.13",
+    "jshint": "^2.9.2",
     "mocha": "^2.5.3"
   }
 }

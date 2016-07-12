@@ -10,21 +10,21 @@ var request = require('request'),
  *
  * @param  {string} bearerToken token authorized by globus.org
  * @param  {string} userEmail   User's e-mail
- * @return {promise}            contains a string of the User's UUID
+ * @return {promise}            containing the body of the response
  */
 exports.getUserId = function(bearerToken, userEmail) {
-  return new Promise(function(resolve, reject) {
-    var url = authBaseURL + 'identities?usernames=' + userEmail.replace('@', '%40');
+    return new Promise(function(resolve, reject) {
+        var url = authBaseURL + 'identities?usernames=' + userEmail.replace('@', '%40');
 
-    function callback(err, response, body) {
-        if (err) {
-            reject(new Error(err));
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
         }
-        resolve(JSON.parse(body).identities[0].id);
-    }
 
-    request.get(url, callback).auth(null, null, true, bearerToken);
-  });
+        request.get(url, callback).auth(null, null, true, bearerToken);
+    });
 };
 
 /**
@@ -63,33 +63,33 @@ exports.getEndPoint = function(bearerToken, endpointId) {
  * @return {promise}             containing the body of the response
  */
 exports.createEndPoint = function(bearerToken, displayName, hostId, path, description, organization) {
-  return new Promise(function(resolve, reject) {
-    var url = transferBaseURL + 'shared_endpoint',
-        shared_endpoint_json = {
-            json: {
-                'DATA_TYPE': 'shared_endpoint',
-                'display_name': displayName,
-                'host_endpoint': hostId,
-                'host_path': path,
-                'description': description,
-                'organization': organization
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'shared_endpoint',
+            shared_endpoint_json = {
+                json: {
+                    'DATA_TYPE': 'shared_endpoint',
+                    'display_name': displayName,
+                    'host_endpoint': hostId,
+                    'host_path': path,
+                    'description': description,
+                    'organization': organization
+                }
+            };
+
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
             }
-        };
-
-    function callback(err, response, body) {
-        if (err) {
-            reject(new Error(err));
+            resolve(body);
         }
-        resolve(body);
-    }
 
-    request.post(url, shared_endpoint_json, callback).auth(null, null, true, bearerToken);
-  });
+        request.post(url, shared_endpoint_json, callback).auth(null, null, true, bearerToken);
+    });
 };
 
 // https://docs.globus.org/api/transfer/endpoint_activation/#get_activation_requirements
 
-var endpointURL = 'endpoint/'
+var endpointURL = 'endpoint/';
 
 /**
  * getActivationRequirements - Gets the activation requirements of a particular endpoint.

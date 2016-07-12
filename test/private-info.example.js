@@ -1,4 +1,3 @@
-
 /**
  * INSTRUCTIONS:
  *  1. Remove the .example from this file name. (e.g. on the command line `mv private-info.example.js private-info.js`).
@@ -14,12 +13,12 @@
  */
 
 exports.getBearerToken = function() {
-  return 'YOUR_BEARER_TOKEN_HERE';
-}
+    return 'YOUR_BEARER_TOKEN_HERE';
+};
 
 exports.getEndPointId = function() {
-  return 'YOUR_ENDPOINT_ID_HERE';
-}
+    return 'YOUR_ENDPOINT_ID_HERE';
+};
 
 exports.getActivationRequirementsDocument = function() {
     return {
@@ -156,14 +155,14 @@ exports.getAccessRuleDocument = function() {
 };
 
 exports.getAccessDocument = function() {
-  return {
-    "DATA_TYPE": "access",
-    "id": 'ACL_ID_HERE',
-    "role_id": null,
-    "principal_type": "identity",
-    "principal": "USER_UUID_HERE",
-    "path": "/~/output.out",
-    "permissions": "rw",
-    "notify_email": "user_email@example.edu"
-  };
+    return {
+        "DATA_TYPE": "access",
+        "id": 'ACL_ID_HERE',
+        "role_id": null,
+        "principal_type": "identity",
+        "principal": "USER_UUID_HERE",
+        "path": "/~/output.out",
+        "permissions": "rw",
+        "notify_email": "user_email@example.edu"
+    };
 };
