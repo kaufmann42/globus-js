@@ -28,14 +28,14 @@ exports.getAccessRulesList = function(bearerToken, endpointId) {
 
 
 /**
- * getAccessRulesList - Get a single access rule for a specified endpoint by id.
+ * getAccessRulesListById - Get a single access rule for a specified endpoint by id.
  *
  * @param  {string} bearerToken  token authorized by globus.org.
  * @param  {string} endpointId   the id of the endpoint you'd like to get an ACL from.
  * @param  {int} id          Integer id of an access rule.
  * @return {promise}             containing the body of the response.
  */
-exports.getAccessRulesList = function(bearerToken, endpointId, id) {
+exports.getAccessRulesListById = function(bearerToken, endpointId, id) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'endpoint/' + endpointId + '/access/' + id;
 
@@ -97,6 +97,7 @@ exports.createAccessRule = function(bearerToken, endpointId, userId, path, permi
  *
  * @param  {string} bearerToken  token authorized by globus.org
  * @param  {string} id             Unique id for this access rule. Implicit access rules from "access_manager" role assignments will have a null id, see role_id.
+ * @param  {string} endpointId   the id of the endpoint you'd like to base your share off of.
  * @param  {string} role_id        description
  * @param  {string} principal_type Type of principal that the rule applies to. One of "identity", "group", or "all_authenticated_users" or "anonymous".
  * @param  {string} principal      The subject of the access rule; the interpretation depends on principal_type: [See link here for options.](https://docs.globus.org/api/transfer/acl/#fields)
@@ -104,9 +105,9 @@ exports.createAccessRule = function(bearerToken, endpointId, userId, path, permi
  * @param  {string} permissions    How much permission to grant the principal specified in principal_type and principal. Either read-only, specified as "r", or read-write, specified as "rw".
  * @return {promise}             containing the body of the response
  */
-exports.updateAccessRule = function(bearerToken, id, role_id, principal_type, principal, path, permissions) {
+exports.updateAccessRule = function(bearerToken, endpointId, id, role_id, principal_type, principal, path, permissions) {
     return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + 'endpoint/' + endpointId + '/access',
+        var url = transferBaseURL + 'endpoint/' + endpointId + '/access/' + id,
             acl_json = {
                 json: {
                     'DATA_TYPE': 'access',

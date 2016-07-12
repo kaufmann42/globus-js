@@ -10,6 +10,7 @@
  *    c. Click on an endpoint OR search for an publicly managed endpoint
  *    d. In the 'Overview' tab scroll to the bottom of the page and copy down your endpoint's UUID.
  *  4. get the activation requirements document by using the getActivationRequirements(..) method and reviewing the body replacing required null 'values' in 'DATA' array.
+ *  5. get an example transfer and deletion document (https://docs.globus.org/api/transfer/task_submit/#transfer_and_delete_documents) for task submission.
  */
 
 exports.getBearerToken = function() {
@@ -137,4 +138,32 @@ exports.getDeleteDocument = function() {
             path: 'YOUR_ABSOLUTE_PATH_HERE'
         }]
     };
+};
+
+exports.getACLId = function() {
+    return 'ACL_ID_HERE';
+};
+
+exports.getAccessRuleDocument = function() {
+    return {
+        'DATA_TYPE': 'access',
+        'principal_type': 'identity',
+        'principal': 'USER_UUID_HERE',
+        'path': '/',
+        'permissions': 'r',
+        'notify_email': 'user_email@example.edu',
+    };
+};
+
+exports.getAccessDocument = function() {
+  return {
+    "DATA_TYPE": "access",
+    "id": 'ACL_ID_HERE',
+    "role_id": null,
+    "principal_type": "identity",
+    "principal": "USER_UUID_HERE",
+    "path": "/~/output.out",
+    "permissions": "rw",
+    "notify_email": "user_email@example.edu"
+  };
 };
