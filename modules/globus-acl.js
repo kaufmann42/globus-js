@@ -1,13 +1,3 @@
-var request = require('request'),
-    transferBaseURL = 'https://transfer.api.globusonline.org/v0.10/';
-
-function callback(err, response, body) {
-    if (err) {
-        resolve(new Error(err));
-    }
-    resolve(body);
-}
-
 // https://docs.globus.org/api/transfer/acl
 
 /**

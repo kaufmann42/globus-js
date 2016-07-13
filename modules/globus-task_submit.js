@@ -1,14 +1,3 @@
-var request = require('request'),
-    transferBaseURL = 'https://transfer.api.globusonline.org/v0.10/',
-    authBaseURL = 'https://auth.globus.org/v2/api/';
-
-function callback(err, response, body) {
-    if (err) {
-        reject(new Error(err));
-    }
-    resolve(body);
-}
-
 // https://docs.globus.org/api/transfer/task_submit/#operations_requirements
 
 /**
