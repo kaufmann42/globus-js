@@ -211,7 +211,7 @@ exports.updateEndpointServerById = function(bearerToken, endpoint_xid, server_id
                     hostname: hostname,
                     uri: uri,
                     port: port || '2811',
-                    scheme: scheme || 'gsiftp',å
+                    scheme: scheme || 'gsiftp',
                     subject: subject
                 }
             };
