@@ -2,6 +2,13 @@ var request = require('request'),
     transferBaseURL = 'https://transfer.api.globusonline.org/v0.10/',
     authBaseURL = 'https://auth.globus.org/v2/api/';
 
+function callback(err, response, body) {
+    if (err) {
+        reject(new Error(err));
+    }
+    resolve(body);
+}
+
 // https://docs.globus.org/api/transfer/task_submit/#operations_requirements
 
 /**
@@ -14,13 +21,6 @@ var request = require('request'),
 exports.getSubmissionId = function(bearerToken) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'submission_id';
-
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
 
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
@@ -68,13 +68,6 @@ exports.submitTransferTask = function(bearerToken, submission_id, label, notify_
             }
         };
 
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
-
         request.post(url, reqBody, callback).auth(null, null, true, bearerToken);
     });
 };
@@ -97,13 +90,6 @@ exports.submitDeletionTask = function(bearerToken, endpoint, DATA, recursive, ig
         var reqBody = {
             json: activation_requirements_document
         };
-
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
 
         request.post(url, reqBody, callback).auth(null, null, true, bearerToken);
     });

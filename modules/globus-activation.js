@@ -1,7 +1,12 @@
 var request = require('request'),
-    transferBaseURL = 'https://transfer.api.globusonline.org/v0.10/endpoint/';
+    transferBaseURL = 'https://transfer.api.globusonline.org/v0.10/';
 
-
+function callback(err, response, body) {
+    if (err) {
+        reject(new Error(err));
+    }
+    resolve(body);
+}
 
 // https://docs.globus.org/api/transfer/endpoint_activation/#get_activation_requirements
 
@@ -14,14 +19,7 @@ var request = require('request'),
  */
 exports.getActivationRequirements = function(bearerToken, endpointId) {
     return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + endpointId + '/activation_requirements';
-
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
+        var url = transferBaseURL + 'endpoint/' + endpointId + '/activation_requirements';
 
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
@@ -46,17 +44,10 @@ exports.getActivationRequirements = function(bearerToken, endpointId) {
  */
 exports.activateEndpoint = function(bearerToken, endpointId, activation_requirements_document) {
     return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + endpointId + '/activate';
+        var url = transferBaseURL + 'endpoint/' + endpointId + '/activate';
         var reqBody = {
             json: activation_requirements_document
         };
-
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
 
         request.post(url, reqBody, callback).auth(null, null, true, bearerToken);
     });
@@ -72,14 +63,7 @@ exports.activateEndpoint = function(bearerToken, endpointId, activation_requirem
  */
 exports.deactivateEndpoint = function(bearerToken, endpointId) {
     return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + endpointId + '/deactivate';
-
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
+        var url = transferBaseURL + 'endpoint/' + endpointId + '/deactivate';
 
         request.post(url, callback).auth(null, null, true, bearerToken);
     });

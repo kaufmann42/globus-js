@@ -2,6 +2,12 @@ var request = require('request'),
     transferBaseURL = 'https://transfer.api.globusonline.org/v0.10/',
     authBaseURL = 'https://auth.globus.org/v2/api/';
 
+function callback(err, response, body) {
+    if (err) {
+        reject(new Error(err));
+    }
+    resolve(body);
+}
 
 /**
  * getUserId - Given a token authorized by globus.org and a user's e-mail registered by globus
@@ -15,13 +21,6 @@ var request = require('request'),
 exports.getUserId = function(bearerToken, userEmail) {
     return new Promise(function(resolve, reject) {
         var url = authBaseURL + 'identities?usernames=' + userEmail.replace('@', '%40');
-
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
 
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
@@ -37,13 +36,6 @@ exports.getUserId = function(bearerToken, userEmail) {
 exports.getEndPoint = function(bearerToken, endpointId) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'endpoint/' + endpointId;
-
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
 
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
@@ -76,20 +68,11 @@ exports.createEndPoint = function(bearerToken, displayName, hostId, path, descri
                 }
             };
 
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
-
         request.post(url, shared_endpoint_json, callback).auth(null, null, true, bearerToken);
     });
 };
 
 // https://docs.globus.org/api/transfer/endpoint_activation/#get_activation_requirements
-
-var endpointURL = 'endpoint/';
 
 /**
  * getActivationRequirements - Gets the activation requirements of a particular endpoint.
@@ -100,14 +83,7 @@ var endpointURL = 'endpoint/';
  */
 exports.getActivationRequirements = function(bearerToken, endpointId) {
     return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + endpointURL + endpointId + '/activation_requirements';
-
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
+        var url = transferBaseURL + 'endpoint/' + endpointId + '/activation_requirements';
 
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
@@ -132,17 +108,10 @@ exports.getActivationRequirements = function(bearerToken, endpointId) {
  */
 exports.activateEndpoint = function(bearerToken, endpointId, activation_requirements_document) {
     return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + endpointURL + endpointId + '/activate';
+        var url = transferBaseURL + 'endpoint/' + endpointId + '/activate';
         var reqBody = {
             json: activation_requirements_document
         };
-
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
 
         request.post(url, reqBody, callback).auth(null, null, true, bearerToken);
     });
@@ -158,14 +127,7 @@ exports.activateEndpoint = function(bearerToken, endpointId, activation_requirem
  */
 exports.deactivateEndpoint = function(bearerToken, endpointId) {
     return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + endpointURL + endpointId + '/deactivate';
-
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
+        var url = transferBaseURL + 'endpoint/' + endpointId + '/deactivate';
 
         request.post(url, callback).auth(null, null, true, bearerToken);
     });
@@ -183,13 +145,6 @@ exports.deactivateEndpoint = function(bearerToken, endpointId) {
 exports.getSubmissionId = function(bearerToken) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'submission_id';
-
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
 
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
@@ -237,13 +192,6 @@ exports.submitTransferTask = function(bearerToken, submission_id, label, notify_
             }
         };
 
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
-
         request.post(url, reqBody, callback).auth(null, null, true, bearerToken);
     });
 };
@@ -266,13 +214,6 @@ exports.submitDeletionTask = function(bearerToken, endpoint, DATA, recursive, ig
         var reqBody = {
             json: activation_requirements_document
         };
-
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
 
         request.post(url, reqBody, callback).auth(null, null, true, bearerToken);
     });
@@ -315,13 +256,6 @@ exports.getAccessRulesListById = function(bearerToken, endpointId, id) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'endpoint/' + endpointId + '/access/' + id;
 
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
-
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
 };
@@ -352,13 +286,6 @@ exports.createAccessRule = function(bearerToken, endpointId, userId, path, permi
                     'notify_email': userEmail
                 }
             };
-
-        function callback(err, response, body) {
-            if (err) {
-                resolve(new Error(err));
-            }
-            resolve(body);
-        }
 
         request.post(url, acl_json, callback).auth(null, null, true, bearerToken);
     });
@@ -394,13 +321,6 @@ exports.updateAccessRule = function(bearerToken, endpointId, id, role_id, princi
                     'permissions': permissions
                 }
             };
-
-        function callback(err, response, body) {
-            if (err) {
-                resolve(new Error(err));
-            }
-            resolve(body);
-        }
 
         request.put(url, acl_json, callback).auth(null, null, true, bearerToken);
     });

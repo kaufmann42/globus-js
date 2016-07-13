@@ -1,6 +1,12 @@
 var request = require('request'),
     transferBaseURL = 'https://transfer.api.globusonline.org/v0.10/';
 
+function callback(err, response, body) {
+    if (err) {
+        resolve(new Error(err));
+    }
+    resolve(body);
+}
 
 // https://docs.globus.org/api/transfer/acl
 
@@ -39,13 +45,6 @@ exports.getAccessRulesListById = function(bearerToken, endpointId, id) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'endpoint/' + endpointId + '/access/' + id;
 
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
-
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
 };
@@ -63,7 +62,7 @@ exports.getAccessRulesListById = function(bearerToken, endpointId, id) {
  * @param  {string} emailMessage the message you'd like to attach to the e-mail
  * @return {promise}             containing the body of the response
  */
-exports.createAccessRule = function(bearerToken, endpointId, userId, path, permissions, userEmail, emailMessage) {
+exports.createAccessRule = function(bearerToken, endpointId, userId, path, permissions, userEmail) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'endpoint/' + endpointId + '/access',
             acl_json = {
@@ -73,17 +72,9 @@ exports.createAccessRule = function(bearerToken, endpointId, userId, path, permi
                     'principal': userId,
                     'path': path,
                     'permissions': 'r',
-                    'notify_email': userEmail,
-                    'notify_message': emailMessage
+                    'notify_email': userEmail
                 }
             };
-
-        function callback(err, response, body) {
-            if (err) {
-                resolve(new Error(err));
-            }
-            resolve(body);
-        }
 
         request.post(url, acl_json, callback).auth(null, null, true, bearerToken);
     });
@@ -119,13 +110,6 @@ exports.updateAccessRule = function(bearerToken, endpointId, id, role_id, princi
                     'permissions': permissions
                 }
             };
-
-        function callback(err, response, body) {
-            if (err) {
-                resolve(new Error(err));
-            }
-            resolve(body);
-        }
 
         request.put(url, acl_json, callback).auth(null, null, true, bearerToken);
     });
