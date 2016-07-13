@@ -16,7 +16,7 @@ exports.getBearerToken = function() {
     return 'YOUR_BEARER_TOKEN_HERE';
 };
 
-exports.getEndPointId = function() {
+exports.getEndpointId = function() {
     return 'YOUR_ENDPOINT_ID_HERE';
 };
 

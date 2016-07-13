@@ -4,12 +4,12 @@
  * getAccessRulesList - Get the list of access rules in the ACL for a specified endpoint.
  *
  * @param  {string} bearerToken  token authorized by globus.org.
- * @param  {string} endpointId   the id of the endpoint you'd like to list ACL's from.
+ * @param  {string} endpoint_xid   the id of the endpoint you'd like to list ACL's from.
  * @return {promise}             containing the body of the response.
  */
-exports.getAccessRulesList = function(bearerToken, endpointId) {
+exports.getAccessRulesList = function(bearerToken, endpoint_xid) {
     return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + 'endpoint/' + endpointId + '/access_list';
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/access_list';
 
         function callback(err, response, body) {
             if (err) {
@@ -27,24 +27,24 @@ exports.getAccessRulesList = function(bearerToken, endpointId) {
  * getAccessRulesListById - Get a single access rule for a specified endpoint by id.
  *
  * @param  {string} bearerToken  token authorized by globus.org.
- * @param  {string} endpointId   the id of the endpoint you'd like to get an ACL from.
+ * @param  {string} endpoint_xid   the id of the endpoint you'd like to get an ACL from.
  * @param  {int} id          Integer id of an access rule.
  * @return {promise}             containing the body of the response.
  */
-exports.getAccessRulesListById = function(bearerToken, endpointId, id) {
+exports.getAccessRulesListById = function(bearerToken, endpoint_xid, id) {
     return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + 'endpoint/' + endpointId + '/access/' + id;
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/access/' + id;
 
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
 };
 
 /**
- * createAccessRule - opens an access point with a given user. Shared endpointId's can be
+ * createAccessRule - opens an access point with a given user. Shared endpoint_xid's can be
  * found by looking at the details of the endpoint you want to piggy back off of.
  *
  * @param  {string} bearerToken  token authorized by globus.org.
- * @param  {string} endpointId   the id of the endpoint you'd like to base your share off of.
+ * @param  {string} endpoint_xid   the id of the endpoint you'd like to base your share off of.
  * @param  {string} userId       the UUID of the user you'd like to share this endpoint with
  * @param  {string} path         an absolute path to the resoureces you'd like to share
  * @param  {string} permissions  a combination of 'r', 'w', to give the user read and write permissions
@@ -52,9 +52,9 @@ exports.getAccessRulesListById = function(bearerToken, endpointId, id) {
  * @param  {string} emailMessage the message you'd like to attach to the e-mail
  * @return {promise}             containing the body of the response
  */
-exports.createAccessRule = function(bearerToken, endpointId, userId, path, permissions, userEmail) {
+exports.createAccessRule = function(bearerToken, endpoint_xid, userId, path, permissions, userEmail) {
     return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + 'endpoint/' + endpointId + '/access',
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/access',
             acl_json = {
                 json: {
                     'DATA_TYPE': 'access',
@@ -78,7 +78,7 @@ exports.createAccessRule = function(bearerToken, endpointId, userId, path, permi
  *
  * @param  {string} bearerToken  token authorized by globus.org
  * @param  {string} id             Unique id for this access rule. Implicit access rules from "access_manager" role assignments will have a null id, see role_id.
- * @param  {string} endpointId   the id of the endpoint you'd like to base your share off of.
+ * @param  {string} endpoint_xid   the id of the endpoint you'd like to base your share off of.
  * @param  {string} role_id        description
  * @param  {string} principal_type Type of principal that the rule applies to. One of "identity", "group", or "all_authenticated_users" or "anonymous".
  * @param  {string} principal      The subject of the access rule; the interpretation depends on principal_type: [See link here for options.](https://docs.globus.org/api/transfer/acl/#fields)
@@ -86,9 +86,9 @@ exports.createAccessRule = function(bearerToken, endpointId, userId, path, permi
  * @param  {string} permissions    How much permission to grant the principal specified in principal_type and principal. Either read-only, specified as "r", or read-write, specified as "rw".
  * @return {promise}             containing the body of the response
  */
-exports.updateAccessRule = function(bearerToken, endpointId, id, role_id, principal_type, principal, path, permissions) {
+exports.updateAccessRule = function(bearerToken, endpoint_xid, id, role_id, principal_type, principal, path, permissions) {
     return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + 'endpoint/' + endpointId + '/access/' + id,
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/access/' + id,
             acl_json = {
                 json: {
                     'DATA_TYPE': 'access',
@@ -113,13 +113,13 @@ exports.updateAccessRule = function(bearerToken, endpointId, id, role_id, princi
  * but before the response is received by the client.
  *
  * @param  {string} bearerToken  token authorized by globus.org
- * @param  {string} endpointId   the id of the endpoint you'd like to delete an ACL from
+ * @param  {string} endpoint_xid   the id of the endpoint you'd like to delete an ACL from
  * @param  {int} id          Integer id of an access rule.
  * @return {promise}             containing the body of the response
  */
-exports.deleteAccessRule = function(bearerToken, endpointId, id) {
+exports.deleteAccessRule = function(bearerToken, endpoint_xid, id) {
     return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + 'endpoint/' + endpointId + '/access/' + id;
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/access/' + id;
 
         function callback(err, response, body) {
             if (err) {

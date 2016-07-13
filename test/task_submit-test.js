@@ -1,7 +1,7 @@
 var assert = require('chai').assert,
     privateInfo = require('./private-info'),
     bearerToken = privateInfo.getBearerToken(),
-    endpointId = privateInfo.getEndPointId(),
+    endpoint_xid = privateInfo.getEndpointId(),
     task_submit = require('../globus'),
     transferDocument = privateInfo.getTransferDocument(),
     deletionDocument = privateInfo.getDeleteDocument();

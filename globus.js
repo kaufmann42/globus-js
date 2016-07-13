@@ -8,19 +8,151 @@ function callback(err, response, body) {
     }
     resolve(body);
 }
+// https://docs.globus.org/api/transfer/acl
 
+/**
+ * getAccessRulesList - Get the list of access rules in the ACL for a specified endpoint.
+ *
+ * @param  {string} bearerToken  token authorized by globus.org.
+ * @param  {string} endpoint_xid   the id of the endpoint you'd like to list ACL's from.
+ * @return {promise}             containing the body of the response.
+ */
+exports.getAccessRulesList = function(bearerToken, endpoint_xid) {
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/access_list';
+
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
+
+        request.get(url, callback).auth(null, null, true, bearerToken);
+    });
+};
+
+
+/**
+ * getAccessRulesListById - Get a single access rule for a specified endpoint by id.
+ *
+ * @param  {string} bearerToken  token authorized by globus.org.
+ * @param  {string} endpoint_xid   the id of the endpoint you'd like to get an ACL from.
+ * @param  {int} id          Integer id of an access rule.
+ * @return {promise}             containing the body of the response.
+ */
+exports.getAccessRulesListById = function(bearerToken, endpoint_xid, id) {
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/access/' + id;
+
+        request.get(url, callback).auth(null, null, true, bearerToken);
+    });
+};
+
+/**
+ * createAccessRule - opens an access point with a given user. Shared endpoint_xid's can be
+ * found by looking at the details of the endpoint you want to piggy back off of.
+ *
+ * @param  {string} bearerToken  token authorized by globus.org.
+ * @param  {string} endpoint_xid   the id of the endpoint you'd like to base your share off of.
+ * @param  {string} userId       the UUID of the user you'd like to share this endpoint with
+ * @param  {string} path         an absolute path to the resoureces you'd like to share
+ * @param  {string} permissions  a combination of 'r', 'w', to give the user read and write permissions
+ * @param  {string} userEmail    the email of the user you'd like to notify
+ * @param  {string} emailMessage the message you'd like to attach to the e-mail
+ * @return {promise}             containing the body of the response
+ */
+exports.createAccessRule = function(bearerToken, endpoint_xid, userId, path, permissions, userEmail) {
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/access',
+            acl_json = {
+                json: {
+                    'DATA_TYPE': 'access',
+                    'principal_type': 'identity',
+                    'principal': userId,
+                    'path': path,
+                    'permissions': 'r',
+                    'notify_email': userEmail
+                }
+            };
+
+        request.post(url, acl_json, callback).auth(null, null, true, bearerToken);
+    });
+};
+
+
+
+/**
+ * updateAccessRule - Update the permissions on an existing access rule. Other fields (besides DATA_TYPE which must always be present) may be omitted.
+ * If the id is present it must match the id in the URL.
+ *
+ * @param  {string} bearerToken  token authorized by globus.org
+ * @param  {string} id             Unique id for this access rule. Implicit access rules from "access_manager" role assignments will have a null id, see role_id.
+ * @param  {string} endpoint_xid   the id of the endpoint you'd like to base your share off of.
+ * @param  {string} role_id        description
+ * @param  {string} principal_type Type of principal that the rule applies to. One of "identity", "group", or "all_authenticated_users" or "anonymous".
+ * @param  {string} principal      The subject of the access rule; the interpretation depends on principal_type: [See link here for options.](https://docs.globus.org/api/transfer/acl/#fields)
+ * @param  {string} path           Absolute path to a directory the access rule applies to. The path must begin and end with a slash, and can’t contain un-normalized components "/../" or "/./". GridFTP endpoints and shared endpoints hosted on GridFTP endpoints also support home directory relative paths beginning with "/~/". The path is limited to 2000 characters after encoding; in practice this means 2000 ascii characters and slightly less when unicode is present and must be encoded.
+ * @param  {string} permissions    How much permission to grant the principal specified in principal_type and principal. Either read-only, specified as "r", or read-write, specified as "rw".
+ * @return {promise}             containing the body of the response
+ */
+exports.updateAccessRule = function(bearerToken, endpoint_xid, id, role_id, principal_type, principal, path, permissions) {
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/access/' + id,
+            acl_json = {
+                json: {
+                    'DATA_TYPE': 'access',
+                    'id': id,
+                    'role_id': role_id,
+                    'principal_type': principal_type,
+                    'principal': principal,
+                    'path': path,
+                    'permissions': permissions
+                }
+            };
+
+        request.put(url, acl_json, callback).auth(null, null, true, bearerToken);
+    });
+};
+
+
+/**
+ * deleteAccessRule - Delete a single access rule, specified by id.
+ * Returns a result document with code "Deleted" on success and HTTP status code 200, and an "AccessRuleNotFound" error if the rule has already been deleted.
+ * If the client is using a retry loop, both should be accepted as success in case the first successful attempt is disconnected after the request is processed
+ * but before the response is received by the client.
+ *
+ * @param  {string} bearerToken  token authorized by globus.org
+ * @param  {string} endpoint_xid   the id of the endpoint you'd like to delete an ACL from
+ * @param  {int} id          Integer id of an access rule.
+ * @return {promise}             containing the body of the response
+ */
+exports.deleteAccessRule = function(bearerToken, endpoint_xid, id) {
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/access/' + id;
+
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
+
+        request.delete(url, callback).auth(null, null, true, bearerToken);
+    });
+};
 // https://docs.globus.org/api/transfer/endpoint_activation/#get_activation_requirements
 
 /**
  * getActivationRequirements - Gets the activation requirements of a particular endpoint.
  *
  * @param  {string} bearerToken token authorized by globus.org
- * @param  {string} endpointId  UUID of endpoint you want to get the activation requirements for
+ * @param  {string} endpoint_xid  UUID of endpoint you want to get the activation requirements for
  * @return {promise}          containing the body of the response
  */
-exports.getActivationRequirements = function(bearerToken, endpointId) {
+exports.getActivationRequirements = function(bearerToken, endpoint_xid) {
     return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + 'endpoint/' + endpointId + '/activation_requirements';
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/activation_requirements';
 
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
@@ -39,13 +171,13 @@ exports.getActivationRequirements = function(bearerToken, endpointId) {
  * TYPE indicates the type of activation used.
  *
  * @param  {string} bearerToken                      token authorized by globus.org
- * @param  {string} endpointId                       UUID of endpoint you want to activate
+ * @param  {string} endpoint_xid                       UUID of endpoint you want to activate
  * @param  {object} activation_requirements_document a json object gotten from getActivationRequirements(..) with the required values filled in (https://docs.globus.org/api/transfer/endpoint_activation/#activation_requirements_document)
  * @return {promise}                                  containing the body of the response
  */
-exports.activateEndpoint = function(bearerToken, endpointId, activation_requirements_document) {
+exports.activateEndpoint = function(bearerToken, endpoint_xid, activation_requirements_document) {
     return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + 'endpoint/' + endpointId + '/activate';
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/activate';
         var reqBody = {
             json: activation_requirements_document
         };
@@ -59,17 +191,289 @@ exports.activateEndpoint = function(bearerToken, endpointId, activation_requirem
  * deactivateEndpoint - Deactivates a endpoint given its UUID.
  *
  * @param  {string} bearerToken token authorized by globus.org
- * @param  {string} endpointId  UUID of endpoint you want to deactivate
+ * @param  {string} endpoint_xid  UUID of endpoint you want to deactivate
  * @return {promise}          containing the body of the response
  */
-exports.deactivateEndpoint = function(bearerToken, endpointId) {
+exports.deactivateEndpoint = function(bearerToken, endpoint_xid) {
     return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + 'endpoint/' + endpointId + '/deactivate';
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/deactivate';
 
         request.post(url, callback).auth(null, null, true, bearerToken);
     });
 };
+// https://docs.globus.org/api/auth/reference/#api_endpoints
 
+/**
+ * getUserId - Given a token authorized by globus.org and a user's e-mail registered by globus
+ * it returns the user's id. Can be used in conjunction with shareEndpointWithUser's userId
+ * feild.
+ *
+ * @param  {string} bearerToken token authorized by globus.org
+ * @param  {string} userEmail   User's e-mail
+ * @return {promise}            containing the body of the response
+ */
+exports.getUserId = function(bearerToken, userEmail) {
+    return new Promise(function(resolve, reject) {
+        var url = authBaseURL + 'identities?usernames=' + userEmail.replace('@', '%40');
+
+        request.get(url, callback).auth(null, null, true, bearerToken);
+    });
+};
+// https://docs.globus.org/api/transfer/endpoint/#operations
+
+/**
+ * getEndpointById - get's information about an endpoint given its endpoint_xid.
+ *
+ * @param  {string} bearerToken token authorized by globus.org
+ * @param  {string} endpoint_xid  The UUID of the endpoint.
+ * @return {promise}            containing the body of the response
+ */
+exports.getEndpointById = function(bearerToken, endpoint_xid) {
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid;
+
+        request.get(url, callback).auth(null, null, true, bearerToken);
+    });
+};
+
+
+/**
+ * createEndpoint - description
+ *
+ * @param  {string} bearerToken      token authorized by globus.org
+ * @param  {string} display_name     Friendly name for the endpoint, not unique. Unicode string, max 128 characters, no new lines (\r or \n). If not specified, will default to canonical_name, but that is deprecated and all new clients hould use id and display_name. Searchable.
+ * @param  {array} server_documents Array of [server documents](https://docs.globus.org/api/transfer/endpoint/#server_document) that each represents a network service that provides access to a filesystem. The most common type is a GridFTP server, which is represented by scheme "gsiftp". This is also the default scheme.
+ * @return {promise}            containing the body of the response
+ */
+exports.createEndpoint = function(bearerToken, display_name, server_documents) {
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'endpoint',
+            reqBody = {
+                json: {
+                    display_name: display_name,
+                    DATA: server_documents
+                }
+            };
+
+        request.post(url, reqBody, callback).auth(null, null, true, bearerToken);
+    });
+};
+
+/**
+ * createSharedEndpoint - creates a shared_endpoint endpoint that it's ACL can be editted
+ * to share paths with certain people.
+ *
+ * @param  {string} bearerToken  token authorized by globus.org
+ * @param  {string} displayName  Friendly name for the endpoint, not unique. Unicode string, max 128 characters, no new lines (\r or \n). If not specified, will default to canonical_name, but that is deprecated and all new clients hould use id and display_name. Searchable.
+ * @param  {string} hostId       Id of standard endpoint hosting the shared endpoint.
+ * @param  {string} path         Root path being shared on the host endpoint.
+ * @param  {string} description  A description of the endpoint. Unicode string, max length 4096 characters. Included in fulltext search.
+ * @param  {string} organization Organization that runs the server(s) represented by the endpoint. Optional to preserve backward compatibility, but will eventually be required and all clients are encouraged to require users to specify it. Unicode string, max 1024 characters, no new lines. Searchable.
+ * @return {promise}             containing the body of the response
+ */
+exports.createSharedEndpoint = function(bearerToken, displayName, hostId, path, description, organization) {
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'shared_endpoint',
+            reqBody = {
+                json: {
+                    'DATA_TYPE': 'shared_endpoint',
+                    'display_name': displayName,
+                    'host_endpoint': hostId,
+                    'host_path': path,
+                    'description': description,
+                    'organization': organization
+                }
+            };
+
+        request.post(url, reqBody, callback).auth(null, null, true, bearerToken);
+    });
+};
+
+
+/**
+ * exports - Update an endpoint. This can be done using a partial document by specifying only DATA_TYPE and the fields to be updated, or doing a GET on the endpoint,
+ * changing the appropriate fields, and doing a PUT of the full document. Using a partial document is preferred.
+ *
+ * @param  {string} bearerToken               token authorized by globus.org
+ * @param  {string} endpoint_xid              The UUID of the endpoint.
+ * @param  {object} partial_endpoint_document Look at this [link](https://docs.globus.org/api/transfer/endpoint/#update_endpoint_by_id) for an explanation of a partial_endpoint_document based off of server and updated fields.
+ * @return {promise}             containing the body of the response
+ */
+exports.updateEndpointById = function(bearerToken, endpoint_xid, partial_endpoint_document) {
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid,
+            reqBody = {
+                json: partial_endpoint_document
+            };
+
+        request.put(url, reqBody, callback).auth(null, null, true, bearerToken);
+    });
+};
+
+
+/**
+ * deleteEndpointById - Delete an endpoint by id or canonical name (the latter is deprecated). Only the owner can delete the endpoint. Note that all data associated with the endpoint,
+ *  including roles and the ACL, will be deleted as well. If the hostname of the server has changed, the server document(s) in the endpoint should be changed rather than deleting and
+ *  recreating the endpoint with different servers.
+ *
+ * @param  {string} bearerToken               token authorized by globus.org
+ * @param  {string} endpoint_xid              The UUID of the endpoint.
+ * @return {promise}             containing the body of the response
+ */
+exports.deleteEndpointById = function(bearerToken, endpoint_xid) {
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid;
+
+        request.delete(url, callback).auth(null, null, true, bearerToken);
+    });
+};
+
+
+/**
+ * getEffectivePauseRuleList - Get all pause rules on an endpoint that affect the current user, with sensitive administrator only fields removed.
+ *
+ * @param  {string} bearerToken               token authorized by globus.org
+ * @param  {string} endpoint_xid              The UUID of the endpoint.
+ * @return {promise}             containing the body of the response
+ */
+exports.getEffectivePauseRuleList = function(bearerToken, endpoint_xid) {
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/my_effective_pause_rule_list';
+
+        request.get(url, callback).auth(null, null, true, bearerToken);
+    });
+};
+
+
+/**
+ * getEndpointServerList - Get a list of all servers belonging to the specified endpoint. Note that this is the same as the server list included under the "DATA" key
+ * of the endpoint document.
+ *
+ * @param  {string} bearerToken               token authorized by globus.org
+ * @param  {string} endpoint_xid              The UUID of the endpoint.
+ * @return {promise}             containing the body of the response
+ */
+exports.getEndpointServerList = function(bearerToken, endpoint_xid) {
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/server_list';
+
+        request.get(url, callback).auth(null, null, true, bearerToken);
+    });
+};
+
+
+/**
+ * getEndpointServerById - Get a specific server belonging to the specified endpoint.
+ *
+ * @param  {string} bearerToken   token authorized by globus.org
+ * @param  {string} endpoint_xid  The UUID of the endpoint.
+ * @param  {string} server_id     UUID of the server you want get.
+ * @return {promise}             containing the body of the response
+ */
+exports.getEndpointServerById = function(bearerToken, endpoint_xid, server_id) {
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/server_list';
+
+        request.get(url, callback).auth(null, null, true, bearerToken);
+    });
+};
+
+
+/**
+ * exports - Add a server to the specified endpoint. The hostname field is required, scheme and port default to "gsiftp" and 2811, and subject defaults to "null". The derived fields
+ * and boolean status fields are ignored, and should not be included in the request body.
+ * Returns a result document containing the id of the newly added server.
+ *
+ * @param  {string} bearerToken   token authorized by globus.org
+ * @param  {string} endpoint_xid  The UUID of the endpoint.
+ * @param  {string} hostname     Hostname of the server.
+ * @param  {string} uri          URI of the server. This is a derived field combining the scheme, hostname, and port, and is not used when creating servers.
+ * @param  {string} port         Port the server is listening on. Default: 2811.
+ * @param  {string} scheme       URI scheme (protocol) used by the endpoint. Must be "gsiftp" or "ftp". Default: "gsiftp".
+ * @return {promise}             containing the body of the response
+ */
+exports.addEndpointServer = function(bearerToken, endpoint_xid, hostname, uri, port, scheme) {
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/server',
+            reqBody = {
+                json: {
+                    DATA_TYPE: "server",
+                    hostname: hostname,
+                    uri: uri,
+                    port: port || '2811',
+                    scheme: scheme || 'gsiftp'
+                }
+            };
+
+        request.post(url, reqBody, callback).auth(null, null, true, bearerToken);
+    });
+};
+
+
+/**
+ * updateEndpointServerById - Update a server belonging to the specified endpoint. Include only the fields to be updated in the request body - any of hostname, scheme, port, and subject can be updated.
+ *
+ * @param  {string} bearerToken   token authorized by globus.org
+ * @param  {string} endpoint_xid  The UUID of the endpoint.
+ * @param  {type} server_id       The UUID of the server you wish to update.
+ * @param  {string} hostname     Hostname of the server.
+ * @param  {string} uri          URI of the server. This is a derived field combining the scheme, hostname, and port, and is not used when creating servers.
+ * @param  {string} port         Port the server is listening on. Default: 2811.
+ * @param  {string} scheme       URI scheme (protocol) used by the endpoint. Must be "gsiftp" or "ftp". Default: "gsiftp".
+ * @param  {string} subject      subject of the x509 certificate of the server. If not specified, the CN in the subject must match its hostname.
+ * @return {promise}             containing the body of the response
+ */
+exports.updateEndpointServerById = function(bearerToken, endpoint_xid, server_id, hostname, uri, port, scheme, subject) {
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/server/' + server_id,
+            reqBody = {
+                json: {
+                    DATA_TYPE: "server",
+                    hostname: hostname,
+                    uri: uri,
+                    port: port || '2811',
+                    scheme: scheme || 'gsiftp',å
+                    subject: subject
+                }
+            };
+
+        request.put(url, reqBody, callback).auth(null, null, true, bearerToken);
+    });
+};
+
+
+/**
+ * deleteEndpointById - Delete a server belonging to the specified endpoint.
+ *
+ * @param  {string} bearerToken   token authorized by globus.org
+ * @param  {string} endpoint_xid  The UUID of the endpoint.
+ * @param  {type} server_id       The UUID of the server you wish to update.
+ * @return {promise}             containing the body of the response
+ */
+exports.deleteEndpointById = function(bearerToken, endpoint_xid, server_id) {
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/server/' + server_id;
+
+        request.delete(url, callback).auth(null, null, true, bearerToken);
+    });
+};
+
+
+/**
+ * getSharedEndpointList - Get a list of shared endpoints owned by the current user and hosted by a given GridFTP or Globus Connect Personal endpoint. Returns a
+ * "BadRequest" error if called on an endpoint that can’t host shared endpoints.
+ *
+ * @param  {string} bearerToken   token authorized by globus.org
+ * @param  {string} endpoint_xid  The UUID of the endpoint.
+ * @return {promise}              containing the body of the response
+ */
+exports.getSharedEndpointList = function(bearerToken, endpoint_xid) {
+    return new Promise(function(resolve, reject) {
+        var url = transferBaseURL + 'endpoint/' + endpoint_xid + 'my_shared_endpoint_list';
+
+        request.get(url, callback).auth(null, null, true, bearerToken);
+    });
+};
 // https://docs.globus.org/api/transfer/task_submit/#operations_requirements
 
 /**
@@ -153,139 +557,5 @@ exports.submitDeletionTask = function(bearerToken, endpoint, DATA, recursive, ig
         };
 
         request.post(url, reqBody, callback).auth(null, null, true, bearerToken);
-    });
-};
-
-// https://docs.globus.org/api/transfer/acl
-
-/**
- * getAccessRulesList - Get the list of access rules in the ACL for a specified endpoint.
- *
- * @param  {string} bearerToken  token authorized by globus.org.
- * @param  {string} endpointId   the id of the endpoint you'd like to list ACL's from.
- * @return {promise}             containing the body of the response.
- */
-exports.getAccessRulesList = function(bearerToken, endpointId) {
-    return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + 'endpoint/' + endpointId + '/access_list';
-
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
-
-        request.get(url, callback).auth(null, null, true, bearerToken);
-    });
-};
-
-
-/**
- * getAccessRulesListById - Get a single access rule for a specified endpoint by id.
- *
- * @param  {string} bearerToken  token authorized by globus.org.
- * @param  {string} endpointId   the id of the endpoint you'd like to get an ACL from.
- * @param  {int} id          Integer id of an access rule.
- * @return {promise}             containing the body of the response.
- */
-exports.getAccessRulesListById = function(bearerToken, endpointId, id) {
-    return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + 'endpoint/' + endpointId + '/access/' + id;
-
-        request.get(url, callback).auth(null, null, true, bearerToken);
-    });
-};
-
-/**
- * createAccessRule - opens an access point with a given user. Shared endpointId's can be
- * found by looking at the details of the endpoint you want to piggy back off of.
- *
- * @param  {string} bearerToken  token authorized by globus.org.
- * @param  {string} endpointId   the id of the endpoint you'd like to base your share off of.
- * @param  {string} userId       the UUID of the user you'd like to share this endpoint with
- * @param  {string} path         an absolute path to the resoureces you'd like to share
- * @param  {string} permissions  a combination of 'r', 'w', to give the user read and write permissions
- * @param  {string} userEmail    the email of the user you'd like to notify
- * @param  {string} emailMessage the message you'd like to attach to the e-mail
- * @return {promise}             containing the body of the response
- */
-exports.createAccessRule = function(bearerToken, endpointId, userId, path, permissions, userEmail) {
-    return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + 'endpoint/' + endpointId + '/access',
-            acl_json = {
-                json: {
-                    'DATA_TYPE': 'access',
-                    'principal_type': 'identity',
-                    'principal': userId,
-                    'path': path,
-                    'permissions': 'r',
-                    'notify_email': userEmail
-                }
-            };
-
-        request.post(url, acl_json, callback).auth(null, null, true, bearerToken);
-    });
-};
-
-
-
-/**
- * updateAccessRule - Update the permissions on an existing access rule. Other fields (besides DATA_TYPE which must always be present) may be omitted.
- * If the id is present it must match the id in the URL.
- *
- * @param  {string} bearerToken  token authorized by globus.org
- * @param  {string} id             Unique id for this access rule. Implicit access rules from "access_manager" role assignments will have a null id, see role_id.
- * @param  {string} endpointId   the id of the endpoint you'd like to base your share off of.
- * @param  {string} role_id        description
- * @param  {string} principal_type Type of principal that the rule applies to. One of "identity", "group", or "all_authenticated_users" or "anonymous".
- * @param  {string} principal      The subject of the access rule; the interpretation depends on principal_type: [See link here for options.](https://docs.globus.org/api/transfer/acl/#fields)
- * @param  {string} path           Absolute path to a directory the access rule applies to. The path must begin and end with a slash, and can’t contain un-normalized components "/../" or "/./". GridFTP endpoints and shared endpoints hosted on GridFTP endpoints also support home directory relative paths beginning with "/~/". The path is limited to 2000 characters after encoding; in practice this means 2000 ascii characters and slightly less when unicode is present and must be encoded.
- * @param  {string} permissions    How much permission to grant the principal specified in principal_type and principal. Either read-only, specified as "r", or read-write, specified as "rw".
- * @return {promise}             containing the body of the response
- */
-exports.updateAccessRule = function(bearerToken, endpointId, id, role_id, principal_type, principal, path, permissions) {
-    return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + 'endpoint/' + endpointId + '/access/' + id,
-            acl_json = {
-                json: {
-                    'DATA_TYPE': 'access',
-                    'id': id,
-                    'role_id': role_id,
-                    'principal_type': principal_type,
-                    'principal': principal,
-                    'path': path,
-                    'permissions': permissions
-                }
-            };
-
-        request.put(url, acl_json, callback).auth(null, null, true, bearerToken);
-    });
-};
-
-
-/**
- * deleteAccessRule - Delete a single access rule, specified by id.
- * Returns a result document with code "Deleted" on success and HTTP status code 200, and an "AccessRuleNotFound" error if the rule has already been deleted.
- * If the client is using a retry loop, both should be accepted as success in case the first successful attempt is disconnected after the request is processed
- * but before the response is received by the client.
- *
- * @param  {string} bearerToken  token authorized by globus.org
- * @param  {string} endpointId   the id of the endpoint you'd like to delete an ACL from
- * @param  {int} id          Integer id of an access rule.
- * @return {promise}             containing the body of the response
- */
-exports.deleteAccessRule = function(bearerToken, endpointId, id) {
-    return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + 'endpoint/' + endpointId + '/access/' + id;
-
-        function callback(err, response, body) {
-            if (err) {
-                reject(new Error(err));
-            }
-            resolve(body);
-        }
-
-        request.delete(url, callback).auth(null, null, true, bearerToken);
     });
 };
