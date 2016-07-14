@@ -17,7 +17,9 @@ exports.getEndpointById = function(bearerToken, endpoint_xid) {
 
 
 /**
- * createEndpoint - description
+ * createEndpoint - (__UNTESTED__) Create an endpoint. Which fields are required depends on the type of endpoint. Note that name and canonical_name are deprecated and supported only for backward compatibility; display_name should be used instead of, or in addition to, these fields. If canonical_name is not set, it will default to "USERNAME#ENDPOINT_UUID". At least one of them must be specified.
+
+The result will include an id field containing the globally unique endpoint id, which should be used to further manipulate the endpoint document, and to perform transfers and other operations on the endpoint’s filesystem.
  *
  * @param  {string} bearerToken      token authorized by globus.org
  * @param  {string} display_name     Friendly name for the endpoint, not unique. Unicode string, max 128 characters, no new lines (\r or \n). If not specified, will default to canonical_name, but that is deprecated and all new clients hould use id and display_name. Searchable.
