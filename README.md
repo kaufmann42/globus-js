@@ -110,6 +110,19 @@ getActivationRequirements - Gets the activation requirements of a particular end
 
 Returns **[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** containing the body of the response
 
+## autoActivateEndpoint
+
+autoActivateEndpoint - Attempt to auto activate an endpoint. The response will always contain a code field. If the code is "AutoActivateFailed", the response will also include an
+activation requirements document, which can be filled in and submited to activate. On success, it will return a result code of the form "AutoActivated.CREDENTIAL_SOURCE", where
+CREDENTIAL_SOURCE indicates the how the credential was acquired.
+
+**Parameters**
+
+-   `bearerToken` **type** description
+-   `endpoint_xid` **type** description
+
+Returns **type** description
+
 ## activateEndpoint
 
 activateEndpoint - To active an endpoint, clients should get the activation
