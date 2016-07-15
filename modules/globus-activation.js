@@ -11,6 +11,13 @@ exports.getActivationRequirements = function(bearerToken, endpoint_xid) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/activation_requirements';
 
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
+
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
 };
@@ -39,6 +46,13 @@ exports.activateEndpoint = function(bearerToken, endpoint_xid, activation_requir
             json: activation_requirements_document
         };
 
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
+
         request.post(url, reqBody, callback).auth(null, null, true, bearerToken);
     });
 };
@@ -54,6 +68,13 @@ exports.activateEndpoint = function(bearerToken, endpoint_xid, activation_requir
 exports.deactivateEndpoint = function(bearerToken, endpoint_xid) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/deactivate';
+
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
 
         request.post(url, callback).auth(null, null, true, bearerToken);
     });

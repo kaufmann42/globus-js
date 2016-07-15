@@ -35,6 +35,13 @@ exports.getAccessRulesListById = function(bearerToken, endpoint_xid, id) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/access/' + id;
 
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
+
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
 };
@@ -65,6 +72,13 @@ exports.createAccessRule = function(bearerToken, endpoint_xid, userId, path, per
                     'notify_email': userEmail
                 }
             };
+
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
 
         request.post(url, acl_json, callback).auth(null, null, true, bearerToken);
     });
@@ -100,6 +114,14 @@ exports.updateAccessRule = function(bearerToken, endpoint_xid, id, role_id, prin
                     'permissions': permissions
                 }
             };
+
+
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
 
         request.put(url, acl_json, callback).auth(null, null, true, bearerToken);
     });

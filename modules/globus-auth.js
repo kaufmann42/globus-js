@@ -13,6 +13,13 @@ exports.getUserId = function(bearerToken, userEmail) {
     return new Promise(function(resolve, reject) {
         var url = authBaseURL + 'identities?usernames=' + userEmail.replace('@', '%40');
 
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
+
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
 };

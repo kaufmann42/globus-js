@@ -166,7 +166,9 @@ Returns **[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 ## createEndpoint
 
-createEndpoint - description
+createEndpoint - (**UNTESTED**) Create an endpoint. Which fields are required depends on the type of endpoint. Note that name and canonical_name are deprecated and supported only for backward compatibility; display_name should be used instead of, or in addition to, these fields. If canonical_name is not set, it will default to "USERNAME#ENDPOINT_UUID". At least one of them must be specified.
+
+The result will include an id field containing the globally unique endpoint id, which should be used to further manipulate the endpoint document, and to perform transfers and other operations on the endpoint’s filesystem.
 
 **Parameters**
 

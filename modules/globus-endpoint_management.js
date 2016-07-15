@@ -11,6 +11,13 @@ exports.getEndpointById = function(bearerToken, endpoint_xid) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'endpoint/' + endpoint_xid;
 
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
+
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
 };
@@ -35,6 +42,13 @@ exports.createEndpoint = function(bearerToken, display_name, server_documents) {
                     DATA: server_documents
                 }
             };
+
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
 
         request.post(url, reqBody, callback).auth(null, null, true, bearerToken);
     });
@@ -65,6 +79,13 @@ exports.createSharedEndpoint = function(bearerToken, displayName, hostId, path, 
                     'organization': organization
                 }
             };
+
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
 
         request.post(url, reqBody, callback).auth(null, null, true, bearerToken);
     });
@@ -105,6 +126,13 @@ exports.deleteEndpointById = function(bearerToken, endpoint_xid) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'endpoint/' + endpoint_xid;
 
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
+
         request.delete(url, callback).auth(null, null, true, bearerToken);
     });
 };
@@ -120,6 +148,13 @@ exports.deleteEndpointById = function(bearerToken, endpoint_xid) {
 exports.getEffectivePauseRuleList = function(bearerToken, endpoint_xid) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/my_effective_pause_rule_list';
+
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
 
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
@@ -138,6 +173,13 @@ exports.getEndpointServerList = function(bearerToken, endpoint_xid) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/server_list';
 
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
+
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
 };
@@ -154,6 +196,13 @@ exports.getEndpointServerList = function(bearerToken, endpoint_xid) {
 exports.getEndpointServerById = function(bearerToken, endpoint_xid, server_id) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/server_list';
+
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
 
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
@@ -185,6 +234,13 @@ exports.addEndpointServer = function(bearerToken, endpoint_xid, hostname, uri, p
                     scheme: scheme || 'gsiftp'
                 }
             };
+
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
 
         request.post(url, reqBody, callback).auth(null, null, true, bearerToken);
     });
@@ -218,6 +274,13 @@ exports.updateEndpointServerById = function(bearerToken, endpoint_xid, server_id
                 }
             };
 
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
+
         request.put(url, reqBody, callback).auth(null, null, true, bearerToken);
     });
 };
@@ -235,6 +298,13 @@ exports.deleteEndpointById = function(bearerToken, endpoint_xid, server_id) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/server/' + server_id;
 
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
+
         request.delete(url, callback).auth(null, null, true, bearerToken);
     });
 };
@@ -251,6 +321,13 @@ exports.deleteEndpointById = function(bearerToken, endpoint_xid, server_id) {
 exports.getSharedEndpointList = function(bearerToken, endpoint_xid) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'endpoint/' + endpoint_xid + 'my_shared_endpoint_list';
+
+        function callback(err, response, body) {
+            if (err) {
+                reject(new Error(err));
+            }
+            resolve(body);
+        }
 
         request.get(url, callback).auth(null, null, true, bearerToken);
     });
