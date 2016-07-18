@@ -574,14 +574,14 @@ exports.updateEndpointServerById = function(bearerToken, endpoint_xid, server_id
 
 
 /**
- * deleteEndpointById - Delete a server belonging to the specified endpoint.
+ * deleteEndpointServerById - Delete a server belonging to the specified endpoint.
  *
  * @param  {string} bearerToken   token authorized by globus.org
  * @param  {string} endpoint_xid  The UUID of the endpoint.
  * @param  {type} server_id       The UUID of the server you wish to update.
  * @return {promise}             containing the body of the response
  */
-exports.deleteEndpointById = function(bearerToken, endpoint_xid, server_id) {
+exports.deleteEndpointServerById = function(bearerToken, endpoint_xid, server_id) {
     return new Promise(function(resolve, reject) {
         var url = transferBaseURL + 'endpoint/' + endpoint_xid + '/server/' + server_id;
 

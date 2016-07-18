@@ -233,18 +233,6 @@ deleteEndpointById - Delete an endpoint by id or canonical name (the latter is d
 
 Returns **[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** containing the body of the response
 
-## deleteEndpointById
-
-deleteEndpointById - Delete a server belonging to the specified endpoint.
-
-**Parameters**
-
--   `bearerToken` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** token authorized by globus.org
--   `endpoint_xid` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The UUID of the endpoint.
--   `server_id` **type** The UUID of the server you wish to update.
-
-Returns **[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** containing the body of the response
-
 ## getEffectivePauseRuleList
 
 getEffectivePauseRuleList - Get all pause rules on an endpoint that affect the current user, with sensitive administrator only fields removed.
@@ -311,6 +299,18 @@ updateEndpointServerById - Update a server belonging to the specified endpoint. 
 -   `port` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Port the server is listening on. Default: 2811.
 -   `scheme` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** URI scheme (protocol) used by the endpoint. Must be "gsiftp" or "ftp". Default: "gsiftp".
 -   `subject` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** subject of the x509 certificate of the server. If not specified, the CN in the subject must match its hostname.
+
+Returns **[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** containing the body of the response
+
+## deleteEndpointServerById
+
+deleteEndpointServerById - Delete a server belonging to the specified endpoint.
+
+**Parameters**
+
+-   `bearerToken` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** token authorized by globus.org
+-   `endpoint_xid` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The UUID of the endpoint.
+-   `server_id` **type** The UUID of the server you wish to update.
 
 Returns **[promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** containing the body of the response
 
