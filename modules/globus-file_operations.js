@@ -7,13 +7,13 @@
  *
  * @param  {string} bearerToken       Token authorized by globus.org.
  * @param  {string} endpoint_xid      The id of the endpoint you'd like to get an ACL from.
- * @param  {string} path              For shared endpoints, S3 endpoints, and anonymous FTP endpoints, the default is /. For GridFTP endpoints, the default is /~/. Most of the time this will map to the user’s home directory. However the administrator of the GridFTP server can configure it to point elsewhere. Also as a special case, if the restricted paths configuration on the server does not allow the user’s home directory, it will fall back to /.
- * @param  {string} query_parameters  Added on query parameters to the end of the string (must be prefixed with an ampersand).  [Link](https://docs.globus.org/api/transfer/file_operations/#dir_listing_query_parameters)
+ * @param  {string} path              (**OPTIONAL**) For shared endpoints, S3 endpoints, and anonymous FTP endpoints, the default is /. For GridFTP endpoints, the default is /~/. Most of the time this will map to the user’s home directory. However the administrator of the GridFTP server can configure it to point elsewhere. Also as a special case, if the restricted paths configuration on the server does not allow the user’s home directory, it will fall back to /.
+ * @param  {string} query_parameters  (**OPTIONAL**) Added on query parameters to the end of the string (must be prefixed with an ampersand).  [Link](https://docs.globus.org/api/transfer/file_operations/#dir_listing_query_parameters)
  * @return {promise}             containing the body of the response.
  */
 exports.listDirectoryContents = function(bearerToken, endpoint_xid, path, query_parameters) {
     return new Promise(function(resolve, reject) {
-        var url = transferBaseURL + 'operation/endpoint/' + endpoint_xid + '/ls?path=' + (path || '/') + query_parameters;
+        var url = transferBaseURL + 'operation/endpoint/' + endpoint_xid + '/ls?path=' + (path || '/') + (query_parameters || '');
 
         function callback(err, response, body) {
             if (err) {
